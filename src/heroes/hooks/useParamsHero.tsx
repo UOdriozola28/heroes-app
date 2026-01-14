@@ -1,24 +1,33 @@
 import { useSearchParams } from "react-router";
 
+type SearchParams = { [key: string]: string }
+
 interface Props {
   activeTab: string,
   page: string,
   limit: string,
-  handleChangeSearchParams: (key: string, value: string) => void
+  category: string,
+  handleChangeSearchParams: (params: SearchParams) => void
 }
 
 export const useParamsHero = (): Props => {
 
-  const tabType = ['all', 'favorites', 'heroes', 'villains']
   const [searchParams, setSearchParams] = useSearchParams();
+  const tabType = ['all', 'favorites', 'heroes', 'villains']
   const tabSearchTab = searchParams.get('tab') ?? 'all';
   const activeTab = (tabType.includes(tabSearchTab)) ? tabSearchTab : 'all'
   const page = searchParams.get('page') ?? '1';
   const limit = searchParams.get('limit') ?? '6';
+  const category = searchParams.get('category') ?? 'all'
 
-  const handleChangeSearchParams = (key: string, value: string) => {
+  const handleChangeSearchParams = (params: SearchParams) => {
+    const paramsNew = Object.entries(params)
     setSearchParams(prev => {
-      prev.set(key, value)
+
+      paramsNew.forEach(([key, value]) => {
+        prev.set(key, value.toString())
+      })
+
       return prev
     })
   }
@@ -27,6 +36,7 @@ export const useParamsHero = (): Props => {
     activeTab,
     page,
     limit,
+    category,
     handleChangeSearchParams
   }
 

@@ -11,8 +11,8 @@ import { useParamsHero } from '@/heroes/hooks/useParamsHero';
 
 export const HomePage = memo(() => {
 
-  const { activeTab, limit, page, handleChangeSearchParams } = useParamsHero()
-  const { data: heroesReponse } = usePaginationHero(+limit, +page)
+  const { activeTab, limit, page, category, handleChangeSearchParams } = useParamsHero()
+  const { data: heroesReponse } = usePaginationHero(+limit, +page, category)
   const { data: summary } = useHeroSummary()
 
   // ? ya no se usa useEffect con TanStack
@@ -39,22 +39,46 @@ export const HomePage = memo(() => {
         {/* Tabs */}
         <Tabs value={activeTab} className="mb-8">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all" onClick={() => handleChangeSearchParams('tab', 'all')}>
+            <TabsTrigger value="all" onClick={() =>
+              handleChangeSearchParams({
+                tab: 'all',
+                category: 'all',
+                page: '1',
+              })
+            }>
               All Characters ({summary?.totalHeroes})
             </TabsTrigger>
             <TabsTrigger
               value="favorites"
               className="flex items-center gap-2"
-              onClick={() => handleChangeSearchParams('tab', 'favorites')}
+              onClick={() =>
+                handleChangeSearchParams({
+                  tab: 'favorites',
+                  category: 'favorites',
+                  page: '1',
+                })
+              }
             >
               Favorites (3)
             </TabsTrigger>
-            <TabsTrigger value="heroes" onClick={() => handleChangeSearchParams('tab', 'heroes')}>
+            <TabsTrigger value="heroes" onClick={() =>
+              handleChangeSearchParams({
+                tab: 'heroes',
+                category: 'hero',
+                page: '1',
+              })
+            }>
               Heroes ({summary?.heroCount})
             </TabsTrigger>
             <TabsTrigger
               value="villains"
-              onClick={() => handleChangeSearchParams('tab', 'villains')}
+              onClick={() =>
+                handleChangeSearchParams({
+                  tab: 'villains',
+                  category: 'villain',
+                  page: '1',
+                })
+              }
             >
               Villains ({summary?.villainCount})
             </TabsTrigger>
@@ -72,12 +96,12 @@ export const HomePage = memo(() => {
           <TabsContent value="heroes">
             {/* Mostrar todos los héroes */}
             <h1>Héroes</h1>
-            <HeroGrid heroes={[]} />
+            <HeroGrid heroes={heroesReponse?.heroes ?? []} />
           </TabsContent>
           <TabsContent value="villains">
             {/* Mostrar todos los Villanos */}
             <h1>Villanos</h1>
-            <HeroGrid heroes={[]} />
+            <HeroGrid heroes={heroesReponse?.heroes ?? []} />
           </TabsContent>
         </Tabs>
 
