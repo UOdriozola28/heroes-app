@@ -37,7 +37,7 @@ export const HeroStats = () => {
       >
         <div className="text-2xl font-bold text-red-600">3</div>
         <p className="text-xs text-muted-foreground">18.8% of total</p>
-      </HeroStatCard> 
+      </HeroStatCard>
 
       <HeroStatCard
         title="Fuerte"
