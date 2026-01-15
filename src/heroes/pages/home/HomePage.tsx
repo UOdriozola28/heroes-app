@@ -4,16 +4,18 @@ import { HeroStats } from '@/heroes/components/HeroStats';
 import { HeroGrid } from '@/heroes/components/HeroGrid';
 import { CustomPagination } from '@/components/custom/CustomPagination';
 import { CustomBreadcrumbs } from '@/components/custom/CustomBreadcrumbs';
-import { memo } from 'react';
+import { memo, use } from 'react';
 import { useHeroSummary } from '@/heroes/hooks/useHeroSummary';
 import { usePaginationHero } from '@/heroes/hooks/usePaginationHero';
 import { useParamsHero } from '@/heroes/hooks/useParamsHero';
+import { FavoriteHeroContex } from '@/heroes/contexts/FavoriteHeroContext';
 
 export const HomePage = memo(() => {
 
   const { activeTab, limit, page, category, handleChangeSearchParams } = useParamsHero()
   const { data: heroesReponse } = usePaginationHero(+limit, +page, category)
   const { data: summary } = useHeroSummary()
+  const { favorites, favoriteCount } = use(FavoriteHeroContex);
 
   // ? ya no se usa useEffect con TanStack
   // useEffect(() => {
@@ -59,7 +61,7 @@ export const HomePage = memo(() => {
                 })
               }
             >
-              Favorites (3)
+              Favorites ({favoriteCount})
             </TabsTrigger>
             <TabsTrigger value="heroes" onClick={() =>
               handleChangeSearchParams({
@@ -90,8 +92,7 @@ export const HomePage = memo(() => {
           </TabsContent>
           <TabsContent value="favorites">
             {/* Mostrar todos los personajes favoritos */}
-            <h1>Favoritos!!!</h1>
-            <HeroGrid heroes={[]} />
+            <HeroGrid heroes={favorites} />
           </TabsContent>
           <TabsContent value="heroes">
             {/* Mostrar todos los héroes */}
@@ -106,7 +107,11 @@ export const HomePage = memo(() => {
         </Tabs>
 
         {/* Pagination */}
-        <CustomPagination totalPages={heroesReponse?.pages ?? 0} />
+
+        {
+          activeTab !== 'favorites' && <CustomPagination totalPages={heroesReponse?.pages ?? 0} />
+        }
+
       </>
     </>
   );
